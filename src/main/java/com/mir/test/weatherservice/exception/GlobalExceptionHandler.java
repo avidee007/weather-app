@@ -14,6 +14,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler class which handles any exception happened while processing any request.
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -35,7 +38,7 @@ public class GlobalExceptionHandler {
     var inputError =
         new Error(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
             Instant.now());
-
+    log.error("InvalidInputException exception happened. Error : {}",ex.getMessage());
     return new ResponseEntity<>(inputError, HttpStatus.BAD_REQUEST);
   }
 
@@ -53,7 +56,7 @@ public class GlobalExceptionHandler {
         new Error(HttpStatus.INTERNAL_SERVER_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR.value(),
             wae.getMessage(), Instant.now()
         );
-    log.error("Server Error : {} ", serverError);
+    log.error("WeatherApiException exception happened. Error : {}", wae.getMessage());
     return new ResponseEntity<>(serverError, HttpStatus.INTERNAL_SERVER_ERROR);
 
   }
@@ -65,6 +68,7 @@ public class GlobalExceptionHandler {
         new Error(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
             Instant.now()
         );
+    log.error("UserNameAlreadyExistsException exception happened. Error : {}", ex.getMessage());
     return new ResponseEntity<>(serverError, HttpStatus.BAD_REQUEST);
 
   }
@@ -75,6 +79,7 @@ public class GlobalExceptionHandler {
         new Error(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(),
             Instant.now()
         );
+    log.error("UsernameNotFoundException exception happened. Error : {}", ex.getMessage());
     return new ResponseEntity<>(serverError, HttpStatus.BAD_REQUEST);
 
   }
@@ -85,6 +90,7 @@ public class GlobalExceptionHandler {
         new Error(HttpStatus.UNAUTHORIZED.name(), HttpStatus.UNAUTHORIZED.value(), ex.getMessage(),
             Instant.now()
         );
+    log.error("AuthorizationDeniedException exception happened. Error : {}", ex.getMessage());
     return new ResponseEntity<>(serverError, HttpStatus.UNAUTHORIZED);
 
   }

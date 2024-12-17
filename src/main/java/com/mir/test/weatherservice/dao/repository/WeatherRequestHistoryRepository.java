@@ -6,6 +6,10 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+/**
+ * Repository class for providing query methods for doing weather request history related database
+ * operations.
+ */
 public interface WeatherRequestHistoryRepository extends JpaRepository<WeatherRequestHistoryEntity, UUID> {
 
   @Query("select w from WeatherRequestHistoryEntity w where w.userName = ?1")

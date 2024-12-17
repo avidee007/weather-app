@@ -7,6 +7,9 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+/**
+ * Repository class for providing query methods for user related database operations.
+ */
 public interface UserEntityRepository extends JpaRepository<UserEntity, UUID> {
 
   @Query("""

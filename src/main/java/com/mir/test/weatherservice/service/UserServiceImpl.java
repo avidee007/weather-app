@@ -20,6 +20,14 @@ public class UserServiceImpl implements UserService {
   private final UserEntityAssembler userAssembler;
   private final PasswordEncoder passwordEncoder;
 
+  /**
+   * This method registers new user with unique/non existing username in database.The same username
+   * will be used by user to login in and access APIs.
+   *
+   * @param signup Command containing payload to sign up the user.
+   * @return User object with user activation details.
+   * @throws UserNameAlreadyExistsException if username already exists in our application.
+   */
   @Override
   public User registerUser(UserSignup signup) {
     String userName = signup.userName();
@@ -33,6 +41,13 @@ public class UserServiceImpl implements UserService {
     return userAssembler.fromEntity(savedEntity);
   }
 
+  /**
+   * This method deactivates any existing user by username. Only ADMIN user can access this method.
+   *
+   * @param userName Username of deactivating user.
+   * @return User object with deactivation details.
+   * @throws UsernameNotFoundException if userName passed in request does not exists.
+   */
   @Override
   public User deactivateUser(String userName) {
     var active = repository.findByUserName(userName)

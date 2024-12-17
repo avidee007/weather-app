@@ -29,6 +29,13 @@ public class WeatherServiceImpl implements WeatherService {
   private final WeatherRequestHistoryRepository historyRepository;
   private final WeatherReqHistoryEntityAssembler historyEntityAssembler;
 
+  /**
+   * Method fetches the current weather report of given valid USA postal code by calling publically
+   * exposed API from WeatherApi.com.
+   *
+   * @param request WeatherRequest command containing userName and postalCode.
+   * @return WeatherData containing location and current weather deatils.
+   */
   @Override
   @Transactional
   public WeatherData getCurrentWeather(WeatherRequest request) {
@@ -39,6 +46,12 @@ public class WeatherServiceImpl implements WeatherService {
     return toWeatherData(request.postalCode(), weather);
   }
 
+  /**
+   * Method fetches the history of all weather requests by userName.
+   *
+   * @param userName Username.
+   * @return WeatherHistory containing an array of all request made by the given userName.
+   */
   @Override
   public WeatherHistory getWeatherHistoryByUserName(String userName) {
     var byUserNameEntities = historyRepository.findByUserName(userName);
@@ -46,6 +59,12 @@ public class WeatherServiceImpl implements WeatherService {
     return new WeatherHistory(getWeatherDataList(byUserNameEntities));
   }
 
+  /**
+   * Method fetches the history of all weather requests by postal code.
+   *
+   * @param postalCode Postal Code.
+   * @return WeatherHistory containing an array of all request made by the given post code.
+   */
   @Override
   public WeatherHistory getWeatherHistoryByPostalCode(String postalCode) {
     var byPostalCodeEntities = historyRepository.findByPostalCode(postalCode);
