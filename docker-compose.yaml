@@ -1,0 +1,28 @@
+services:
+  database:
+    image: 'postgres:17-alpine'
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: weather-app-db
+  adminer:
+    depends_on:
+      - database
+    image: adminer
+    ports:
+      - "9000:8080"
+
+  weather-app:
+    depends_on:
+      - database
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database/weather-app-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=secret

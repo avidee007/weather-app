@@ -1,0 +1,29 @@
+server:
+  servlet:
+    context-path: /weather-app
+spring:
+  application:
+    name: weatherservice
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: test
+    password: test
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: false
+      maximum-pool-size: 10
+      pool-name: weatherAppConnectionPool
+
+  jpa:
+    generate-ddl: false
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+weather:
+  api:
+    baseUri: https://api.weatherapi.com/v1/current.json
+    apiKey: 1218d164b6a348f8ae2110732241212

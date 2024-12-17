@@ -1,0 +1,266 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_user_tbl_16_dec_24
+      author: Avinash Kumar
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: user_name
+                  type: VARCHAR(255)
+              - column:
+                  name: user_role
+                  type: SMALLINT
+              - column:
+                  name: user_status
+                  type: SMALLINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: deactivate_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: version
+                  type: BIGINT
+            tableName: users
+  - changeSet:
+      id: create_weather_tbl_16_dec_24
+      author: Avinash Kumar
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: weather_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: cloud
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: condition_text
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: country
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: humidity
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_day
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: last_updated
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: local_date_time
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: precip_in
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: precip_mm
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: pressure_in
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: pressure_mb
+                  type: INTEGER
+              - column:
+                  constraints:
+                    nullable: false
+                  name: region
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: tempc
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: tempf
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: uv
+                  type: FLOAT4
+              - column:
+                  name: version
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wind_degree
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wind_dir
+                  type: VARCHAR(10)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wind_kph
+                  type: FLOAT4
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wind_mph
+                  type: FLOAT4
+            tableName: weather
+  - changeSet:
+      id: create_weather_request_history_tbl_16_dec_24
+      author: Avinash Kumar
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: weather_request_history_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: postal_code
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: requested_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: user_name
+                  type: VARCHAR(255)
+              - column:
+                  name: version
+                  type: BIGINT
+              - column:
+                  name: weather_id
+                  type: UUID
+            tableName: weather_request_history
+  - changeSet:
+      id: create_index_idx_user_id_16_dec_24
+      author: Avinash Kumar
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: user_name
+            indexName: idx_user_id
+            tableName: weather_request_history
+  - changeSet:
+      id: create_index_idx_postal_code_16_dec_24
+      author: Avinash Kumar
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: postal_code
+            indexName: idx_postal_code
+            tableName: weather_request_history
+  - changeSet:
+      id: create_uc_weather_id
+      author: Avinash Kumar
+      changes:
+        - addUniqueConstraint:
+            columnNames: weather_id
+            constraintName: ukn0agi6ncaovt3oac27kijqy79
+            tableName: weather_request_history
+  - changeSet:
+      id: create_uc_user_name
+      author: Avinash Kumar
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_name
+            constraintName: user_name_uc
+            tableName: users
+  - changeSet:
+      id: add_fc_weather_id
+      author: Avinash Kumar
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: weather_id
+            baseTableName: weather_request_history
+            constraintName: fkkq3pg85qq9sht83fd2laeekqb
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: weather
+            validate: true
+  - changeSet:
+      author: Avinash Kumar
+      id: adding_admin_user
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 'aa130042-1bd0-4695-824a-0cc3a704a8f0'
+              - column:
+                  name: password
+                  value: '$2a$10$6XuaDhQs.d/EdCUaw8nhue4q6GMzbDY.7rue3JJPkrj7h7PfKo/4S'
+              - column:
+                  name: user_name
+                  value: 'admin'
+              - column:
+                  name: user_role
+                  value: '1'
+              - column:
+                  name: user_status
+                  value: '0'
+              - column:
+                  name: version
+                  value: '0'

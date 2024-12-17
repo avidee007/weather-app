@@ -1,0 +1,34 @@
+server:
+  servlet:
+    context-path: /weather-app
+spring:
+  application:
+    name: weatherservice
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/weather2
+    username: postgres
+    password: postgres
+    hikari:
+      pool-name: weatherAppConnectionPool
+      maximum-pool-size: 10
+      auto-commit: false
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  liquibase:
+    changeLog: classpath:/db/changelog/db.changelog-default.yaml
+    database-change-log-lock-table: WEATHER_DATABASECHANGELOGLOCK
+    database-change-log-table: WEATHER_DATABASECHANGELOG
+
+  jpa:
+    generate-ddl: false
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+
+weather:
+  api:
+    baseUri: https://api.weatherapi.com/v1/current.json
+    apiKey: dummyKey(needs to be changed with actual key)
