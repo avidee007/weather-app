@@ -30,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 /**
  * This is an integration test for user lateraled functionalities.
  * This test included all layers from controller to database as part of integration testing.
- * This also test role-based authorization and authentication as part of security testing.
+ * This also tests role-based authorization and authentication as part of security testing.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -94,7 +94,7 @@ class UserControllerIntegrationTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  void deactivateUser_should_return_401_for_valid_active_user_with_USER_role() throws Exception {
+  void deactivateUser_should_return_403_Forbidden_for_non_ADMIN_user() throws Exception {
 
     String username = "validActiveUser";
     repository.save(getUserEntity(username));
@@ -104,8 +104,11 @@ class UserControllerIntegrationTest {
             put("/api/v1/users/deactivate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("username", username))
-        .andExpect(status().isUnauthorized());
-  }
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.errorType").value("FORBIDDEN"))
+        .andExpect(jsonPath("$.statusCode").value(403))
+        .andExpect(jsonPath("$.errorDetails").value("Access Denied : You are not authorized to access this resource."));
+        }
 
 
   private UserEntity getUserEntity(String userName) {

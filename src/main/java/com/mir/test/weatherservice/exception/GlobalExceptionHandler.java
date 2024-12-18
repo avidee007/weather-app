@@ -86,12 +86,13 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(AuthorizationDeniedException.class)
   public ResponseEntity<Error> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+    var errorMsg = String.format("%s : You are not authorized to access this resource.", ex.getMessage());
     var serverError =
-        new Error(HttpStatus.UNAUTHORIZED.name(), HttpStatus.UNAUTHORIZED.value(), ex.getMessage(),
+        new Error(HttpStatus.FORBIDDEN.name(), HttpStatus.FORBIDDEN.value(), errorMsg,
             Instant.now()
         );
-    log.error("AuthorizationDeniedException exception happened. Error : {}", ex.getMessage());
-    return new ResponseEntity<>(serverError, HttpStatus.UNAUTHORIZED);
+    log.error("AuthorizationDeniedException exception happened. Error : {}", errorMsg);
+    return new ResponseEntity<>(serverError, HttpStatus.FORBIDDEN);
 
   }
 

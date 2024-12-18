@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfiguration {
 
   private final CurrentUserDetailsService userDetailsService;
+  private final CustomAuthEntryPoint authEntryPoint;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +38,7 @@ public class WebSecurityConfiguration {
           authorize.requestMatchers("/api/v1/users/signup").permitAll();
           authorize.anyRequest().authenticated();
         })
-        .httpBasic(Customizer.withDefaults())
+        .httpBasic(basic-> basic.authenticationEntryPoint(authEntryPoint))
         .build();
   }
 

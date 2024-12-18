@@ -2,6 +2,7 @@ package com.mir.test.weatherservice.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.mir.test.weatherservice.dao.repository.WeatherRequestHistoryRepository;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -53,6 +55,22 @@ class WeatherControllerIntegrationTest {
   }
 
   @Test
+  @WithAnonymousUser
+  void getWeather_should_return_403_when_unauthenticated_user() throws Exception {
+    var validPayload = """
+        {
+            "userName": "testUser",
+            "postalCode": "98034"
+        }
+        """;
+    mockMvc.perform(
+            post("/api/v1/weather")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validPayload))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
   @WithMockUser(username = "testUser", roles = "USER")
   void getWeather_should_return_200_with_valid_payload_and_user_with_USER_role() throws Exception {
     var validPayload = """
@@ -86,7 +104,7 @@ class WeatherControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "testUser", roles = "USER")
-  void getWeather_should_return_400_with_using_other_user_username() throws Exception {
+  void getWeather_should_return_403_Forbidden_with_using_other_user_username() throws Exception {
     var validPayload = """
         {
             "userName": "otherUser",
@@ -97,7 +115,10 @@ class WeatherControllerIntegrationTest {
             post("/api/v1/weather")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(validPayload))
-         .andExpect(status().isUnauthorized());
+         .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.errorType").value("FORBIDDEN"))
+        .andExpect(jsonPath("$.statusCode").value(403))
+        .andExpect(jsonPath("$.errorDetails").value("Access Denied : You are not authorized to access this resource."));
   }
 
   @Test
